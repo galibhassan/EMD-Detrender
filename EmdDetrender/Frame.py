@@ -8,12 +8,13 @@ class Frame:
         self.xPosition = xPosition
         self.yPosition = yPosition
         self.width = width
-        self.height = height
+        self.height = height,
+        self.backgroundColor = backgroundColor,
         self.core = tk.Frame(
             height=self.height,
             width=self.width,
             bd=1,
-            background=backgroundColor
+            background=self.backgroundColor
         )
         self._place()
 

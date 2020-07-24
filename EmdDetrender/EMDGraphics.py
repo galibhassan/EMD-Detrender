@@ -9,8 +9,14 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 matplotlib.use("TkAgg")
 from Frame import Frame
 from Button import Button
+from CheckButtons import CheckButtons
 
 def emdDetrender(timeSeries, domain):
+    # define a global
+    GLOBAL_DICT = {
+        "checkButtonsState": []
+    }
+
     # define root
     root = tk.Tk()
 
@@ -29,6 +35,7 @@ def emdDetrender(timeSeries, domain):
     figHeight = (windowHeight)/dpi
     sideBar = Frame(root, 0, 0, width=sideBarWidth, height=windowHeight)
 
+
     root.title("EMD Detrender")
     root.geometry(f"{windowWidth}x{windowHeight}+{offsetX}+{offsetY}")
 
@@ -41,11 +48,45 @@ def emdDetrender(timeSeries, domain):
     # place UI components in tkinter window
     canvas.get_tk_widget().place(x=sideBarWidth, y=0)
 
+    imfCheckboxContainer = Frame(sideBar, xPosition=100, yPosition=100, width=100, height=windowHeight-200, )
+    imfCheckButtons = CheckButtons(len(IMFs), imfCheckboxContainer.core)
+
+
+    def buttonClickHandlerCB(args):
+        # args is instance of CheckButtons class
+        vals = args.getCheckButtonValues()
+        GLOBAL_DICT["checkButtonsState"] = vals
+        print(GLOBAL_DICT)
+        root.destroy()
+
     buttonText = "Detrend using selected IMFs"
-    button = Button(root, windowHeight, xPosition=10, yPosition=windowHeight-45,  text=buttonText)
+    button = Button(
+        root, 
+        windowHeight,
+        clickHandler={
+            "callback": buttonClickHandlerCB,
+            "args": imfCheckButtons
+        }, 
+        xPosition=10, 
+        yPosition=windowHeight-45,  
+        text=buttonText
+    )
+
+    appHeading = tk.Label(
+        text= 'EMD Detrending',
+        font=("", 14),
+        background='#4D4F68',
+        foreground='white',
+        padx=30,
+        pady=10,
+        width=23
+    )
+    appHeading.place(x=0, y=0)
 
     root.mainloop()
+    return GLOBAL_DICT["checkButtonsState"]
 
+    
 
 def getIMFs(timeSeries):
     emd = EMD()
@@ -66,7 +107,7 @@ def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
     # plot the IMFs
     for i in range(len(IMFs)):
         ax = fig.add_subplot(nRowsPlot, nColsPlot, i+1+nPlotsBeforeIMFs)
-        ax.set_title(f"IMF {i}", x=-.09, y=0.3, fontsize=10)
+        ax.set_title(f"IMF {i}", x=-.09, y=0.3, fontsize=12)
         ax.plot(domain, IMFs[i])
 
     return fig
@@ -78,6 +119,6 @@ def main():
     freq = 2
     noise = np.random.normal(0, 1, len(domain))
     timeSeries = amp*np.sin(freq*domain) + 1.5*np.sin(15*domain) + linTrend
-    emdDetrender(timeSeries, domain)
-
+    selectedIMFs = emdDetrender(timeSeries, domain)
+    print(selectedIMFs)
 main()

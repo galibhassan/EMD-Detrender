@@ -3,8 +3,9 @@ import tkinter as tk
 
 
 class Button:
-    def __init__(self, root, windowHeight, xPosition=10, yPosition=10, text="Press it!", backgroundColor='#C56C50', foreground='white', eventHandlers={"click": ""}):
+    def __init__(self, root, windowHeight, xPosition=10, yPosition=10, text="Press it!", backgroundColor='#C56C50', foreground='white', clickHandler={}):
         self.root = root
+        self.clickHandler = clickHandler
         self.windowHeight = windowHeight
         self.xPosition = xPosition
         self.yPosition = yPosition
@@ -36,11 +37,13 @@ class Button:
         self.core.bind('<Enter>', self.handleButtonHover)
         self.core.bind('<Leave>', self.handleButtonLeave)
 
-    def handleButtonClick(self, event):
-        self.core["background"] = '#5689ED'
 
     def handleButtonHover(self, event):
         self.core["background"] = '#ED7A56'
 
     def handleButtonLeave(self, event):
         self.core["background"] = self.backgroundColor
+
+    def handleButtonClick(self, event):
+        self.core["background"] = '#5689ED'
+        self.clickHandler["callback"](self.clickHandler["args"])
