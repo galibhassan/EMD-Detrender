@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 matplotlib.use("TkAgg")
 from Frame import Frame
+from Button import Button
 
 def emdDetrender(timeSeries, domain):
     # define root
@@ -22,7 +23,8 @@ def emdDetrender(timeSeries, domain):
     offsetX = int(screenWidth/2 - windowWidth/2)
     offsetY = int(screenHeight/2 - windowHeight/2)
     dpi = 100
-    sideBarWidth=300
+    print(screenWidth)
+    sideBarWidth= int(0.25*windowWidth)
     figWidth = (windowWidth - sideBarWidth)/dpi
     figHeight = (windowHeight)/dpi
     sideBar = Frame(root, 0, 0, width=sideBarWidth, height=windowHeight)
@@ -38,6 +40,10 @@ def emdDetrender(timeSeries, domain):
 
     # place UI components in tkinter window
     canvas.get_tk_widget().place(x=sideBarWidth, y=0)
+
+    buttonText = "Detrend using selected IMFs"
+    button = Button(root, windowHeight, xPosition=10, yPosition=windowHeight-45,  text=buttonText)
+
     root.mainloop()
 
 
@@ -47,7 +53,6 @@ def getIMFs(timeSeries):
     return IMFs
 
 def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
-    
     # make plot
     nPlotsBeforeIMFs = 1 # for the timeseries itself
     nRowsPlot = len(IMFs) + nPlotsBeforeIMFs
@@ -65,7 +70,6 @@ def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
         ax.plot(domain, IMFs[i])
 
     return fig
-
 
 def main():
     domain = np.arange(-10, 10, 0.02)
