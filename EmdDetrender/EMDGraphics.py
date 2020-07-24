@@ -31,7 +31,23 @@ def emdDetrender(timeSeries, domain):
     root.geometry(f"{windowWidth}x{windowHeight}+{offsetX}+{offsetY}")
 
     IMFs = getIMFs(timeSeries)
+    fig = plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi)
+    # add graphics to the tkinter window
+    canvas = FigureCanvasTkAgg(fig, root)
+    canvas.draw()
 
+    # place UI components in tkinter window
+    canvas.get_tk_widget().place(x=sideBarWidth, y=0)
+    root.mainloop()
+
+
+def getIMFs(timeSeries):
+    emd = EMD()
+    IMFs = emd(timeSeries)
+    return IMFs
+
+def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
+    
     # make plot
     nPlotsBeforeIMFs = 1 # for the timeseries itself
     nRowsPlot = len(IMFs) + nPlotsBeforeIMFs
@@ -48,19 +64,7 @@ def emdDetrender(timeSeries, domain):
         ax.set_title(f"IMF {i}", x=-.09, y=0.3, fontsize=10)
         ax.plot(domain, IMFs[i])
 
-    # add graphics to the tkinter window
-    canvas = FigureCanvasTkAgg(fig, root)
-    canvas.draw()
-
-    # place UI components in tkinter window
-    canvas.get_tk_widget().place(x=sideBarWidth, y=0)
-    root.mainloop()
-
-
-def getIMFs(timeSeries):
-    emd = EMD()
-    IMFs = emd(timeSeries)
-    return IMFs
+    return fig
 
 
 def main():
