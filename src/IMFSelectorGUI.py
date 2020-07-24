@@ -29,12 +29,14 @@ def emdDetrender(timeSeries, domain):
     offsetX = int(screenWidth/2 - windowWidth/2)
     offsetY = int(screenHeight/2 - windowHeight/2)
     dpi = 100
-    sideBarWidth= int(0.25*windowWidth)
+    # sideBarWidth= int(0.25*windowWidth)
+    sideBarWidth= 300
+    
     figWidth = (windowWidth - sideBarWidth)/dpi
     figHeight = (windowHeight)/dpi
     sideBar = Frame(root, 0, 0, width=sideBarWidth, height=windowHeight)
 
-    root.title("EMD Detrender")
+    root.title("IMF Subtractor")
     root.geometry(f"{windowWidth}x{windowHeight}+{offsetX}+{offsetY}")
 
     # calculate IMFs, initiate figure
@@ -60,7 +62,7 @@ def emdDetrender(timeSeries, domain):
         GLOBAL_DICT["checkButtonsState"] = vals
         root.destroy()
 
-    buttonText = "Detrend using selected IMFs"
+    buttonText = "Subtract selected IMFs"
     button = Button(
         root, 
         windowHeight,
@@ -74,13 +76,13 @@ def emdDetrender(timeSeries, domain):
     )
 
     appHeading = tk.Label(
-        text= 'EMD Detrending',
+        text= 'IMF Subtractor',
         font=("", 14),
         background='#4D4F68',
         foreground='white',
         padx=30,
         pady=10,
-        width=23
+        width=21
     )
     appHeading.place(x=0, y=0)
 
@@ -113,6 +115,7 @@ def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
     # plot the timeSeries
     ax = fig.add_subplot(nRowsPlot, nColsPlot, 1)
     ax.plot(domain, timeSeries, color='#3AAFA9')
+    ax.set_title(f"Main", x=-.09, y=0.3, fontsize=12)
 
     # plot the IMFs
     for i in range(len(IMFs)):
