@@ -33,11 +33,20 @@ def emdDetrender(timeSeries, domain):
     IMFs = getIMFs(timeSeries)
 
     # make plot
-    nRowsPlot = len(IMFs)
+    nPlotsBeforeIMFs = 1 # for the timeseries itself
+    nRowsPlot = len(IMFs) + nPlotsBeforeIMFs
     nColsPlot = 1
     fig = Figure(figsize=(figWidth, figHeight), dpi=dpi)
-    ax = fig.add_subplot(nRowsPlot, nColsPlot, 2)
+    
+    # plot the timeSeries
+    ax = fig.add_subplot(nRowsPlot, nColsPlot, 1)
     ax.plot(domain, timeSeries, color='#3AAFA9')
+
+    # plot the IMFs
+    for i in range(len(IMFs)):
+        ax = fig.add_subplot(nRowsPlot, nColsPlot, i+1+nPlotsBeforeIMFs)
+        ax.set_title(f"IMF {i}", x=-.09, y=0.3, fontsize=10)
+        ax.plot(domain, IMFs[i])
 
     # add graphics to the tkinter window
     canvas = FigureCanvasTkAgg(fig, root)
@@ -55,8 +64,12 @@ def getIMFs(timeSeries):
 
 
 def main():
-    domain = np.arange(-6, 6, 0.1)
-    timeSeries = np.sin(domain)
+    domain = np.arange(-10, 10, 0.02)
+    linTrend = 1*domain
+    amp = 2
+    freq = 2
+    noise = np.random.normal(0, 1, len(domain))
+    timeSeries = amp*np.sin(freq*domain) + 1.5*np.sin(15*domain) + linTrend
     emdDetrender(timeSeries, domain)
 
 main()
