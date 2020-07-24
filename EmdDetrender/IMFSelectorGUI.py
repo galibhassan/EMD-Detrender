@@ -29,18 +29,18 @@ def emdDetrender(timeSeries, domain):
     offsetX = int(screenWidth/2 - windowWidth/2)
     offsetY = int(screenHeight/2 - windowHeight/2)
     dpi = 100
-    print(screenWidth)
     sideBarWidth= int(0.25*windowWidth)
     figWidth = (windowWidth - sideBarWidth)/dpi
     figHeight = (windowHeight)/dpi
     sideBar = Frame(root, 0, 0, width=sideBarWidth, height=windowHeight)
 
-
     root.title("EMD Detrender")
     root.geometry(f"{windowWidth}x{windowHeight}+{offsetX}+{offsetY}")
 
+    # calculate IMFs, initiate figure
     IMFs = getIMFs(timeSeries)
     fig = plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi)
+
     # add graphics to the tkinter window
     canvas = FigureCanvasTkAgg(fig, root)
     canvas.draw()
@@ -48,15 +48,16 @@ def emdDetrender(timeSeries, domain):
     # place UI components in tkinter window
     canvas.get_tk_widget().place(x=sideBarWidth, y=0)
 
+    # initiate checkBoxes
     imfCheckboxContainer = Frame(sideBar, xPosition=100, yPosition=100, width=100, height=windowHeight-200, )
     imfCheckButtons = CheckButtons(len(IMFs), imfCheckboxContainer.core)
 
 
+    # initiate button for detrending
     def buttonClickHandlerCB(args):
         # args is instance of CheckButtons class
         vals = args.getCheckButtonValues()
         GLOBAL_DICT["checkButtonsState"] = vals
-        print(GLOBAL_DICT)
         root.destroy()
 
     buttonText = "Detrend using selected IMFs"
@@ -111,14 +112,3 @@ def plotTimeSeriesAndIMFs(domain, timeSeries, IMFs, figWidth, figHeight, dpi):
         ax.plot(domain, IMFs[i])
 
     return fig
-
-def main():
-    domain = np.arange(-10, 10, 0.02)
-    linTrend = 1*domain
-    amp = 2
-    freq = 2
-    noise = np.random.normal(0, 1, len(domain))
-    timeSeries = amp*np.sin(freq*domain) + 1.5*np.sin(15*domain) + linTrend
-    selectedIMFs = emdDetrender(timeSeries, domain)
-    print(selectedIMFs)
-main()
