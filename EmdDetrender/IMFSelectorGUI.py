@@ -85,9 +85,18 @@ def emdDetrender(timeSeries, domain):
     appHeading.place(x=0, y=0)
 
     root.mainloop()
-    return GLOBAL_DICT["checkButtonsState"]
 
+    detrendedTimeSeries = getDetrentedTimeSeries(timeSeries, IMFs, GLOBAL_DICT["checkButtonsState"])
+    return detrendedTimeSeries
+
+def getDetrentedTimeSeries(timeseries, IMFs, checkButtonsState):
+    tobeSubtracted = timeseries*0
+    for i in range(len(checkButtonsState)):
+        if checkButtonsState[i] == 1:
+            tobeSubtracted = np.add(tobeSubtracted, IMFs[i])
     
+    detrendedTimeSeries = timeseries - tobeSubtracted
+    return detrendedTimeSeries
 
 def getIMFs(timeSeries):
     emd = EMD()

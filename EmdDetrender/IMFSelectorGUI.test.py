@@ -1,5 +1,6 @@
 import numpy as np
 from IMFSelectorGUI import emdDetrender
+from matplotlib import pyplot as plt
 
 def main():
     domain = np.arange(-10, 10, 0.02)
@@ -10,7 +11,10 @@ def main():
     timeSeries = amp*np.sin(freq*domain) + 1.5*np.sin(15*domain) + linTrend
 
     # test emdDetrender
-    selectedIMFs = emdDetrender(timeSeries, domain)
-    print(selectedIMFs)
+    detrendedTimeSeries = emdDetrender(timeSeries, domain)
+
+    plt.plot(domain, timeSeries)
+    plt.plot(domain, detrendedTimeSeries)
+    plt.show()
 
 main()
