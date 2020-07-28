@@ -4,6 +4,9 @@ Given a timeseries data, this package
 - provides the user a simple graphical user interface to choose the Imperical Mode Functions (IMF)
 - and finally, detrend the timeseries by subtracting the selected IMFs.
 
+## Demo
+![IMFSubtractorGif](https://raw.githubusercontent.com/galibhassan/images/master/EmdDetrender%2002.gif)
+
 ## API
 - #### `emdDetrender`
     input: <br>
